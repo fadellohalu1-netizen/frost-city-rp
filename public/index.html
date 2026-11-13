@@ -1,494 +1,823 @@
 
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FROST CITY RP | Staff Center</title>
-<style>
-:root {
-  --bg:#080f1d;--side:#0c1729;--panel:#111f35;
-  --blue:#2589ff;--cyan:#48caff;--text:#edf5ff;
-  --muted:#91a6c2;--line:#263b59;--green:#36d69a;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Tahoma,sans-serif}
-.layout{display:flex;min-height:100vh}
-.sidebar{width:250px;background:var(--side);border-right:1px solid var(--line);padding:24px 16px;position:fixed;inset:0 auto 0 0}
-.brand{padding:5px 10px 25px;border-bottom:1px solid var(--line)}
-.brand strong{font-size:21px;letter-spacing:1px}
-.brand small{display:block;color:var(--cyan);margin-top:7px;letter-spacing:2px}
-.nav-title{font-size:11px;color:var(--muted);margin:25px 10px 10px}
-.nav button{width:100%;padding:13px 14px;margin:4px 0;text-align:left;border:0;border-radius:9px;background:transparent;color:#b8c9df;cursor:pointer;font-size:14px}
-.nav button:hover,.nav button.active{background:#18365b;color:white}
-.nav button.active{border-left:3px solid var(--cyan)}
-.sidebar-footer{position:absolute;bottom:20px;left:25px;color:var(--muted);font-size:12px}
-.main{margin-left:250px;width:calc(100% - 250px);padding:28px 34px}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-.topbar h1{font-size:25px;margin:0}
-.topbar p{color:var(--muted);margin:7px 0 0;font-size:13px}
-.status{color:var(--green);font-size:13px}
-.page{display:none}.page.active{display:block}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.card,.panel{background:linear-gradient(145deg,var(--panel),#0e1b2e);border:1px solid var(--line);border-radius:13px;padding:20px}
-.stat-label{color:var(--muted);font-size:13px}
-.stat-number{font-size:30px;font-weight:bold;margin-top:12px}
-.stat-note{font-size:12px;color:var(--cyan);margin-top:6px}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:28px 0 14px}
-.section-head h2{font-size:17px;margin:0}
-.panel{margin-top:18px}
-.panel h2{font-size:17px;margin:0 0 18px}
-input,textarea,select{width:100%;background:#091526;border:1px solid var(--line);border-radius:8px;padding:12px;color:white;margin:7px 0 15px;outline:none;font-size:14px}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)}
-label{font-size:13px;color:#b9cbe1}
-textarea{min-height:85px;resize:vertical}
-button.primary,.btn{background:var(--blue);color:white;border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:bold}
-button.secondary{background:#1c304b;color:#d9eaff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer}
-button.danger{background:#512332;color:#ffdce4;border:1px solid #854052;border-radius:8px;padding:8px 12px;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.question{background:#0b192c;border:1px solid var(--line);padding:16px;border-radius:10px;margin:12px 0}
-.option{display:flex;gap:10px;align-items:center;margin:10px 0;color:#d8e6f7}
-.option input{width:auto;margin:0}
-.list-item{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px}
-.badge{font-size:11px;color:var(--cyan);background:#123353;padding:5px 9px;border-radius:20px}
-.hero{min-height:180px;border:1px solid #28517d;border-radius:14px;padding:28px;background:linear-gradient(110deg,#102d50,#102039 65%,#0a1729);display:flex;flex-direction:column;justify-content:center;margin-bottom:20px}
-.hero small{color:var(--cyan);letter-spacing:3px}
-.hero h2{font-size:30px;margin:12px 0 5px}
-.hero p{color:#b4c8e2;margin:0}
-.empty{color:var(--muted);font-size:13px;padding:15px 0}
-.image-preview{min-height:150px;border:1px dashed #426080;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);margin:12px 0;background:#0a1728;overflow:hidden}
-.image-preview img{max-width:100%;max-height:300px;object-fit:contain}
-@media(max-width:900px){
-.sidebar{width:205px}.main{margin-left:205px;width:calc(100% - 205px);padding:20px}
-.grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:600px){
-.sidebar{position:static;width:100%;height:auto}
-.layout{display:block}.sidebar-footer{display:none}
-.main{margin:0;width:100%;padding:18px}
-.grid,.row{grid-template-columns:1fr}
-.topbar{align-items:flex-start;gap:10px;flex-direction:column}
-}
-</style>
-</head>
-<body>
-<div class="layout">
-<aside class="sidebar">
-  <div class="brand"><strong>FROST CITY RP</strong><small>STAFF CENTER</small></div>
-  <div class="nav-title">เมนูหลัก</div>
-  <nav class="nav">
-    <button class="active" data-page="dashboard">▦　ภาพรวม Dashboard</button>
-    <button data-page="apply">✎　สมัครทีมงาน</button>
-    <button data-page="exam">☷　จัดการข้อสอบ</button>
-    <button data-page="results">◉　ผลการสมัคร</button>
-    <div class="nav-title">เครื่องมือ</div>
-    <button data-page="images">▧　AI Image Studio</button>
-  </nav>
-  <div class="sidebar-footer">FROST CITY RP • STAFF SYSTEM</div>
-</aside>
+require("dotenv").config();
 
-<main class="main">
-<header class="topbar">
-  <div>
-    <h1 id="pageTitle">ภาพรวม Dashboard</h1>
-    <p>ระบบจัดการทีมงานและการสมัคร FROST CITY RP</p>
-  </div>
-  <div class="status">● SERVER CONNECTED</div>
-</header>
+const express = require("express");
+const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const bcrypt = require("bcryptjs");
+const helmet = require("helmet");
+const { rateLimit } = require("express-rate-limit");
 
-<section class="page active" id="dashboard">
-  <div class="hero">
-    <small>WELCOME TO FROST CITY</small>
-    <h2>STAFF MANAGEMENT CENTER</h2>
-    <p>ศูนย์กลางจัดการผู้สมัครและทีมงานของเมือง</p>
-  </div>
-  <div class="grid">
-    <div class="card"><div class="stat-label">แบบฟอร์มทั้งหมด</div><div class="stat-number" id="panelCount">0</div><div class="stat-note">APPLICATION PANELS</div></div>
-    <div class="card"><div class="stat-label">ผู้สมัครทั้งหมด</div><div class="stat-number" id="appCount">0</div><div class="stat-note">TOTAL APPLICATIONS</div></div>
-    <div class="card"><div class="stat-label">ผ่านเกณฑ์</div><div class="stat-number" id="passCount">0</div><div class="stat-note">PASSED</div></div>
-    <div class="card"><div class="stat-label">ไม่ผ่านเกณฑ์</div><div class="stat-number" id="failCount">0</div><div class="stat-note">NOT PASSED</div></div>
-  </div>
-  <div class="section-head">
-    <h2>แบบฟอร์มล่าสุด</h2>
-    <button class="secondary" onclick="showPage('exam')">จัดการข้อสอบ →</button>
-  </div>
-  <div class="panel" id="recentPanels"><div class="empty">กำลังโหลดข้อมูล...</div></div>
-</section>
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
-<section class="page" id="apply">
-  <div class="panel">
-    <h2>สมัครทีมงาน FROST CITY RP</h2>
-    <label>เลือกแบบฟอร์ม</label>
-    <select id="applyPanel"><option value="">กำลังโหลดแบบฟอร์ม...</option></select>
-    <div class="row">
-      <div><label>ชื่อเล่นผู้สมัคร</label><input id="nickname" placeholder="กรอกชื่อเล่น"></div>
-      <div><label>ชื่อ IC</label><input id="icName" placeholder="กรอกชื่อในเกม"></div>
-    </div>
-    <div id="appQuestions"><div class="empty">เลือกแบบฟอร์มเพื่อแสดงคำถาม</div></div>
-    <button class="primary" onclick="submitApplication()">ส่งใบสมัครและตรวจคะแนน</button>
-    <div id="applyMessage" class="empty"></div>
-  </div>
-</section>
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-<section class="page" id="exam">
-  <div class="panel">
-    <h2>สร้างแบบฟอร์มข้อสอบ</h2>
-    <label>ชื่อแบบฟอร์ม</label>
-    <input id="panelName" placeholder="เช่น แบบทดสอบสมัครทีมงาน">
-    <label>รายละเอียด</label>
-    <textarea id="panelDescription" placeholder="รายละเอียดแบบฟอร์ม"></textarea>
-    <label>คะแนนขั้นต่ำที่ผ่าน (%)</label>
-    <input id="passMark" type="number" min="0" max="100" value="70">
+const isProduction = process.env.NODE_ENV === "production";
 
-    <div class="section-head">
-      <h2>รายการคำถาม</h2>
-      <div>
-        <button class="primary" onclick="importStaffQuestions()">นำเข้าข้อสอบ 20 ข้อ</button>
-        <button class="secondary" onclick="addQuestion()">＋ เพิ่มคำถาม</button>
-      </div>
-    </div>
+app.set("trust proxy", 1);
 
-    <div id="questionEditor"></div>
-    <button class="primary" onclick="savePanel()">บันทึกแบบฟอร์ม</button>
-    <div id="panelMessage" class="empty"></div>
-  </div>
-  <div class="panel">
-    <h2>แบบฟอร์มที่สร้างไว้</h2>
-    <div id="panelList"><div class="empty">กำลังโหลด...</div></div>
-  </div>
-</section>
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
 
-<section class="page" id="results">
-  <div class="panel"><h2>ผลการสมัครทั้งหมด</h2><div id="resultsList"><div class="empty">กำลังโหลด...</div></div></div>
-</section>
+app.use(express.json({ limit: "2mb" }));
 
-<section class="page" id="images">
-  <div class="panel">
-    <h2>AI IMAGE STUDIO</h2>
-    <p class="empty">สร้างภาพปกแบบฟอร์มและภาพประกอบคำถามด้วย AI</p>
-    <label>ประเภทภาพ</label>
-    <select id="imageType">
-      <option value="cover">ภาพปกแบบฟอร์ม</option>
-      <option value="question">ภาพประกอบคำถาม</option>
-    </select>
-    <label>คำอธิบายภาพที่ต้องการ</label>
-    <textarea id="imagePrompt" placeholder="เช่น ภาพเมือง Roleplay ยามค่ำคืน โทนน้ำเงิน"></textarea>
-    <button class="primary" id="generateImageButton" onclick="generateImage()">✦ สร้างภาพด้วย AI</button>
-    <div class="image-preview" id="imagePreview">พื้นที่แสดงภาพที่ AI สร้าง</div>
-    <div id="imageMessage" class="empty">ระบบสร้างภาพยังอยู่ระหว่างติดตั้ง</div>
-  </div>
-</section>
-</main>
-</div>
-
-<script>
-let panels=[];
-let applications=[];
-
-const titles={
-  dashboard:"ภาพรวม Dashboard",
-  apply:"สมัครทีมงาน",
-  exam:"จัดการข้อสอบ",
-  results:"ผลการสมัคร",
-  images:"AI Image Studio"
-};
-
-function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-  document.getElementById("pageTitle").textContent=titles[id];
-  if(id==="dashboard"||id==="results")loadData();
-  if(id==="apply")loadPanels();
-  if(id==="exam")renderPanelList();
-}
-
-document.querySelectorAll(".nav button").forEach(b=>{
-  b.addEventListener("click",()=>showPage(b.dataset.page));
+// จำกัดจำนวนครั้งในการลองเข้าสู่ระบบและส่งรหัส
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: "draft-7",
+  legacyHeaders: false
 });
 
-async function api(url,options={}){
-  const response=await fetch(url,{
-    ...options,
-    headers:{"Content-Type":"application/json",...(options.headers||{})}
-  });
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error||"เกิดข้อผิดพลาด");
-  return data;
+app.use("/auth", authLimiter);
+app.use("/api/access/redeem", authLimiter);
+
+// ------------------------------
+// DATABASE (JSON)
+// ------------------------------
+
+const dataDir = path.join(__dirname, "data");
+const databaseFile = path.join(dataDir, "database.json");
+
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
 }
 
-async function loadData(){
-  try{
-    panels=await api("/api/panels");
-    applications=await api("/api/applications");
-    document.getElementById("panelCount").textContent=panels.length;
-    document.getElementById("appCount").textContent=applications.length;
-    document.getElementById("passCount").textContent=applications.filter(a=>a.result==="ผ่าน").length;
-    document.getElementById("failCount").textContent=applications.filter(a=>a.result==="ไม่ผ่าน").length;
-    renderPanelList();
-    renderResults();
-    document.getElementById("recentPanels").innerHTML=panels.length?
-      panels.slice(-5).reverse().map(p=>`<div class="list-item"><span>${escapeHTML(p.name)}</span><span class="badge">${p.questions.length} คำถาม</span></div>`).join("")
-      :'<div class="empty">ยังไม่มีแบบฟอร์ม</div>';
-  }catch(e){
-    document.getElementById("recentPanels").textContent="โหลดข้อมูลไม่สำเร็จ: "+e.message;
+function loadDatabase() {
+  if (!fs.existsSync(databaseFile)) {
+    return {
+      panels: [],
+      applications: [],
+      users: [],
+      accessCodes: [],
+      auditLogs: []
+    };
+  }
+
+  try {
+    const oldData = JSON.parse(
+      fs.readFileSync(databaseFile, "utf8")
+    );
+
+    return {
+      panels: Array.isArray(oldData.panels) ? oldData.panels : [],
+      applications: Array.isArray(oldData.applications) ? oldData.applications : [],
+      users: Array.isArray(oldData.users) ? oldData.users : [],
+      accessCodes: Array.isArray(oldData.accessCodes) ? oldData.accessCodes : [],
+      auditLogs: Array.isArray(oldData.auditLogs) ? oldData.auditLogs : []
+    };
+  } catch (error) {
+    console.error("อ่านฐานข้อมูลไม่สำเร็จ:", error.message);
+    throw new Error("ไม่สามารถอ่าน database.json ได้ กรุณาตรวจสอบไฟล์ฐานข้อมูล");
   }
 }
 
-async function loadPanels(){
-  try{
-    panels=await api("/api/panels");
-    const select=document.getElementById("applyPanel");
-    select.innerHTML='<option value="">เลือกแบบฟอร์ม</option>'+
-      panels.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join("");
-    select.onchange=renderApplicantQuestions;
-  }catch(e){
-    document.getElementById("applyMessage").textContent=e.message;
-  }
+let db = loadDatabase();
+
+function saveDatabase() {
+  const tempFile = databaseFile + ".tmp";
+
+  fs.writeFileSync(
+    tempFile,
+    JSON.stringify(db, null, 2),
+    "utf8"
+  );
+
+  fs.renameSync(tempFile, databaseFile);
 }
 
-function renderApplicantQuestions(){
-  const panel=panels.find(p=>p.id===document.getElementById("applyPanel").value);
-  const box=document.getElementById("appQuestions");
-  if(!panel){box.innerHTML='<div class="empty">เลือกแบบฟอร์มเพื่อแสดงคำถาม</div>';return;}
-  box.innerHTML=panel.questions.map((q,i)=>`
-    <div class="question">
-      <strong>${i+1}. ${escapeHTML(q.text)}</strong>
-      ${(q.options||[]).map((op,j)=>`
-        <label class="option">
-          <input type="radio" name="answer${i}" value="${j}" required>
-          <span>${"ABCD"[j]||j+1}. ${escapeHTML(op)}</span>
-        </label>`).join("")}
-    </div>`).join("");
-}
-
-async function submitApplication(){
-  const panelId=document.getElementById("applyPanel").value;
-  const nickname=document.getElementById("nickname").value.trim();
-  const icName=document.getElementById("icName").value.trim();
-  const panel=panels.find(p=>p.id===panelId);
-  const message=document.getElementById("applyMessage");
-
-  if(!panel||!nickname||!icName){
-    message.textContent="กรุณาเลือกแบบฟอร์มและกรอกข้อมูลให้ครบ";
-    return;
-  }
-
-  const answers=[];
-  for(let i=0;i<panel.questions.length;i++){
-    const chosen=document.querySelector(`input[name="answer${i}"]:checked`);
-    if(!chosen){
-      message.textContent=`กรุณาตอบคำถามข้อ ${i+1}`;
-      return;
-    }
-    answers.push(Number(chosen.value));
-  }
-
-  try{
-    const result=await api("/api/applications",{
-      method:"POST",
-      body:JSON.stringify({panelId,nickname,icName,answers})
-    });
-    message.textContent=`ผลสอบ: ${result.result} | คะแนน ${result.score}/${result.total} (${result.percent}%)`;
-    await loadData();
-  }catch(e){
-    message.textContent="ส่งใบสมัครไม่สำเร็จ: "+e.message;
-  }
-}
-
-function addQuestion(){
-  const box=document.createElement("div");
-  box.className="question";
-  box.dataset.question="true";
-  box.innerHTML=`
-    <div class="section-head">
-      <strong>คำถาม</strong>
-      <button class="danger" onclick="this.closest('.question').remove()">ลบคำถาม</button>
-    </div>
-    <label>ข้อความคำถาม</label>
-    <textarea class="q-text" placeholder="พิมพ์คำถาม"></textarea>
-    <div class="row">
-      <div><label>ตัวเลือก A</label><input class="q-option" placeholder="คำตอบ A"></div>
-      <div><label>ตัวเลือก B</label><input class="q-option" placeholder="คำตอบ B"></div>
-      <div><label>ตัวเลือก C</label><input class="q-option" placeholder="คำตอบ C"></div>
-      <div><label>ตัวเลือก D</label><input class="q-option" placeholder="คำตอบ D"></div>
-    </div>
-    <div class="row">
-      <div>
-        <label>เฉลยที่ถูกต้อง</label>
-        <select class="q-correct">
-          <option value="0">A</option>
-          <option value="1">B</option>
-          <option value="2">C</option>
-          <option value="3">D</option>
-        </select>
-      </div>
-      <div><label>คะแนนข้อนี้</label><input class="q-points" type="number" min="1" value="1"></div>
-    </div>`;
-  document.getElementById("questionEditor").appendChild(box);
-}
-
-/* นำเข้าข้อสอบทีมงาน 20 ข้อ */
-function importStaffQuestions(){
-  const questionSet=[
-    ["หากพบผู้เล่นทำผิดกฎ ควรทำอย่างไร?",["แบนทันที","ตรวจสอบหลักฐาน","ด่าผู้เล่น","ปล่อยผ่าน"],1],
-    ["Meta Gaming (MG) คืออะไร?",["ใช้ข้อมูลนอกเกมมาใช้ในเกม","ขับรถเร็ว","ซื้อขายของ","พูดคุยทั่วไป"],0],
-    ["Power Gaming (PG) คืออะไร?",["เล่นตามบทบาท","กระทำฝืนความสมจริงหรือบังคับผู้อื่น","ทำงานในเมือง","ขับรถ"],1],
-    ["RDM หมายถึงอะไร?",["ฆ่าผู้เล่นโดยไม่มีเหตุผล RP","แข่งรถ","ทำงานตำรวจ","ซื้อขายรถ"],0],
-    ["VDM หมายถึงอะไร?",["ใช้รถชนผู้อื่นโดยไม่มีเหตุผล RP","ขับรถตามกฎ","ซ่อมรถ","จอดรถ"],0],
-    ["หากผู้เล่นร้องเรียนทีมงาน ควรทำอย่างไร?",["เพิกเฉย","ลบข้อความ","รับเรื่องและตรวจสอบ","แบนผู้ร้องเรียน"],2],
-    ["หากเพื่อนสนิททำผิดกฎ ควรทำอย่างไร?",["ปกปิด","ปล่อยผ่าน","ใช้กฎอย่างเท่าเทียม","ลบหลักฐาน"],2],
-    ["หน้าที่หลักของแอดมินคืออะไร?",["ใช้อำนาจ","ดูแลความเรียบร้อย","ช่วยเพื่อนเท่านั้น","สร้างปัญหา"],1],
-    ["หากพบหลักฐานไม่เพียงพอ ควรทำอย่างไร?",["ลงโทษทันที","ตรวจสอบเพิ่มเติม","เดาสาเหตุ","ปิดเรื่อง"],1],
-    ["การใช้อำนาจแอดมินเพื่อประโยชน์ส่วนตัวถือว่าอย่างไร?",["ทำได้","เป็นเรื่องปกติ","ผิดจรรยาบรรณทีมงาน","เป็นสิทธิส่วนตัว"],2],
-    ["หากเกิดเหตุทะเลาะวิวาท ควรทำอย่างไร?",["เข้าข้างเพื่อน","ตรวจสอบทั้งสองฝ่าย","ด่าทั้งคู่","แบนทุกคน"],1],
-    ["Fail RP หมายถึงอะไร?",["เล่นตามบทบาท","กระทำที่ขัดต่อสถานการณ์ RP","ทำงานในเมือง","ซื้อขายสินค้า"],1],
-    ["หากผู้เล่นแจ้งปัญหา ควรตอบอย่างไร?",["ใช้คำหยาบ","ไม่ตอบ","สุภาพและให้ความช่วยเหลือ","ไล่ออกจากเซิร์ฟเวอร์"],2],
-    ["หากพบทีมงานทำผิดกฎ ควรทำอย่างไร?",["ปกป้อง","รายงานพร้อมหลักฐาน","เพิกเฉย","ลบหลักฐาน"],1],
-    ["ข้อมูลส่วนตัวของผู้เล่นควรจัดการอย่างไร?",["เผยแพร่ทั่วไป","ส่งให้เพื่อน","เก็บเป็นความลับ","โพสต์สาธารณะ"],2],
-    ["ก่อนลงโทษผู้เล่นควรมีอะไร?",["ความสนิทสนม","หลักฐานและเหตุผล","ความรู้สึกส่วนตัว","คำบอกเล่าอย่างเดียว"],1],
-    ["หากผู้เล่นไม่เข้าใจกฎ ควรทำอย่างไร?",["ด่าทอ","อธิบายกฎอย่างสุภาพ","แบนทันที","เพิกเฉย"],1],
-    ["การให้สิทธิพิเศษแก่เพื่อนโดยไม่เป็นธรรมคืออะไร?",["การทำงานปกติ","การใช้อำนาจไม่เป็นธรรม","หน้าที่แอดมิน","การช่วยเหลือทั่วไป"],1],
-    ["หากเกิดข้อผิดพลาดจากการตัดสินใจของตน ควรทำอย่างไร?",["ปกปิด","โทษคนอื่น","ยอมรับและรายงานผู้รับผิดชอบ","ลบข้อมูล"],2],
-    ["สิ่งใดสำคัญที่สุดในการเป็นทีมงาน?",["อำนาจ","ความสนิทสนม","ความยุติธรรมและความรับผิดชอบ","จำนวนชั่วโมงออนไลน์"],2]
-  ];
-
-  const editor=document.getElementById("questionEditor");
-
-  if(editor.querySelectorAll('[data-question="true"]').length>0){
-    if(!confirm("การนำเข้าจะลบคำถามที่กำลังแก้ไขอยู่ทั้งหมด ต้องการดำเนินการต่อหรือไม่?")){
-      return;
-    }
-  }
-
-  editor.innerHTML="";
-  document.getElementById("panelName").value="แบบทดสอบคัดเลือกทีมงาน FROST CITY RP";
-  document.getElementById("panelDescription").value="ข้อสอบคัดเลือกทีมงาน ทดสอบความรู้กฎ Roleplay และการตัดสินใจ";
-  document.getElementById("passMark").value=70;
-
-  questionSet.forEach(([text,options,correct])=>{
-    addQuestion();
-    const cards=editor.querySelectorAll('[data-question="true"]');
-    const card=cards[cards.length-1];
-
-    card.querySelector(".q-text").value=text;
-    card.querySelectorAll(".q-option").forEach((input,index)=>{
-      input.value=options[index];
-    });
-    card.querySelector(".q-correct").value=correct;
-    card.querySelector(".q-points").value=5;
+function audit(action, user, details = {}) {
+  db.auditLogs.push({
+    id: crypto.randomUUID(),
+    action,
+    user: user?.email || "system",
+    role: user?.role || "system",
+    details,
+    createdAt: new Date().toISOString()
   });
 
-  document.getElementById("panelMessage").textContent=
-    "นำเข้าข้อสอบครบ 20 ข้อแล้ว กรุณากดบันทึกแบบฟอร์ม";
+  // เก็บประวัติล่าสุดไม่เกิน 2,000 รายการ
+  if (db.auditLogs.length > 2000) {
+    db.auditLogs = db.auditLogs.slice(-2000);
+  }
+
+  saveDatabase();
 }
 
-async function savePanel(){
-  const name=document.getElementById("panelName").value.trim();
-  const description=document.getElementById("panelDescription").value.trim();
-  const passMark=Number(document.getElementById("passMark").value);
-  const message=document.getElementById("panelMessage");
-  const cards=[...document.querySelectorAll('[data-question="true"]')];
-  const questions=[];
+// ------------------------------
+// SESSION
+// ------------------------------
 
-  for(const card of cards){
-    const text=card.querySelector(".q-text").value.trim();
-    const options=[...card.querySelectorAll(".q-option")].map(x=>x.value.trim());
-    const points=Number(card.querySelector(".q-points").value);
+if (isProduction && !process.env.SESSION_SECRET) {
+  throw new Error("กรุณาตั้งค่า SESSION_SECRET ใน Environment Variables");
+}
 
-    if(!text||options.some(x=>!x)||!Number.isFinite(points)||points<1){
-      message.textContent="กรุณากรอกคำถาม ตัวเลือก และคะแนนให้ครบ";
-      return;
+app.use(session({
+  name: "frost.sid",
+  secret: process.env.SESSION_SECRET || "local-development-secret-change-this",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax",
+    maxAge: 1000 * 60 * 60 * 8
+  }
+}));
+
+// ------------------------------
+// GOOGLE LOGIN
+// ------------------------------
+
+passport.serializeUser((user, done) => {
+  done(null, user.email);
+});
+
+passport.deserializeUser((email, done) => {
+  const user = db.users.find(
+    item => item.email === email
+  );
+
+  done(null, user || false);
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+const googleConfigured =
+  process.env.GOOGLE_CLIENT_ID &&
+  process.env.GOOGLE_CLIENT_SECRET;
+
+if (googleConfigured) {
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL ||
+      "http://localhost:3000/auth/google/callback"
+  }, (accessToken, refreshToken, profile, done) => {
+    const email = profile.emails?.[0]?.value?.toLowerCase();
+
+    if (!email || profile.emails?.[0]?.verified !== true) {
+      return done(null, false);
     }
 
-    questions.push({
-      text,
-      options,
-      correct:Number(card.querySelector(".q-correct").value),
-      points
+    let user = db.users.find(
+      item => item.email === email
+    );
+
+    // บัญชีนายกกำหนดจาก Environment Variable เท่านั้น
+    if (email === (process.env.MAYOR_EMAIL || "").toLowerCase()) {
+      if (!user) {
+        user = {
+          email,
+          name: profile.displayName || email,
+          role: "mayor",
+          applicationAccess: true,
+          staffId: null,
+          createdAt: new Date().toISOString()
+        };
+
+        db.users.push(user);
+      } else {
+        user.role = "mayor";
+        user.applicationAccess = true;
+      }
+    } else if (!user) {
+      user = {
+        email,
+        name: profile.displayName || email,
+        role: "guest",
+        applicationAccess: false,
+        staffId: null,
+        createdAt: new Date().toISOString()
+      };
+
+      db.users.push(user);
+    } else {
+      user.name = profile.displayName || user.name;
+    }
+
+    saveDatabase();
+    return done(null, user);
+  }));
+}
+
+// ------------------------------
+// AUTHENTICATION HELPERS
+// ------------------------------
+
+function requireLogin(req, res, next) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.status(401).json({
+      success: false,
+      message: "กรุณาเข้าสู่ระบบก่อน"
     });
   }
 
-  if(!name||!questions.length){
-    message.textContent="กรุณาตั้งชื่อแบบฟอร์มและเพิ่มคำถาม";
-    return;
+  next();
+}
+
+function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      return res.status(401).json({
+        success: false,
+        message: "กรุณาเข้าสู่ระบบก่อน"
+      });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "คุณไม่มีสิทธิ์ใช้งานส่วนนี้"
+      });
+    }
+
+    next();
+  };
+}
+
+function requireApplicationAccess(req, res, next) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.status(401).json({
+      success: false,
+      message: "กรุณาเข้าสู่ระบบ Google ก่อน"
+    });
   }
 
-  if(!Number.isFinite(passMark)||passMark<0||passMark>100){
-    message.textContent="คะแนนผ่านต้องอยู่ระหว่าง 0 ถึง 100";
-    return;
+  if (
+    req.user.role !== "mayor" &&
+    !req.user.applicationAccess
+  ) {
+    return res.status(403).json({
+      success: false,
+      message: "บัญชีนี้ยังไม่ได้รับอนุญาตให้สมัครทีมงาน"
+    });
   }
 
-  try{
-    await api("/api/panels",{
-      method:"POST",
-      body:JSON.stringify({name,description,questions,passMark})
+  next();
+}
+
+// ------------------------------
+// GOOGLE AUTH ROUTES
+// ------------------------------
+
+app.get("/auth/google", (req, res, next) => {
+  if (!googleConfigured) {
+    return res.status(503).send(
+      "ระบบ Google Login ยังไม่ได้ตั้งค่า"
+    );
+  }
+
+  passport.authenticate("google", {
+    scope: ["profile", "email"]
+  })(req, res, next);
+});
+
+app.get(
+  "/auth/google/callback",
+  (req, res, next) => {
+    passport.authenticate("google", {
+      failureRedirect: "/?login=failed"
+    })(req, res, next);
+  },
+  (req, res) => {
+    req.session.save(() => {
+      res.redirect("/");
+    });
+  }
+);
+
+app.post("/auth/logout", (req, res, next) => {
+  req.logout(error => {
+    if (error) return next(error);
+
+    req.session.destroy(() => {
+      res.clearCookie("frost.sid");
+      res.json({ success: true });
+    });
+  });
+});
+
+app.get("/api/me", (req, res) => {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.json({
+      loggedIn: false,
+      user: null
+    });
+  }
+
+  res.json({
+    loggedIn: true,
+    user: {
+      email: req.user.email,
+      name: req.user.name,
+      role: req.user.role,
+      applicationAccess: req.user.applicationAccess,
+      staffId: req.user.staffId
+    }
+  });
+});
+
+// ------------------------------
+// ACCESS CODE
+// ------------------------------
+
+// นายกออก Access Code ให้บัญชี Google ที่ระบุ
+app.post(
+  "/api/access-codes",
+  requireRole("mayor"),
+  async (req, res) => {
+    try {
+      const email = String(req.body.email || "")
+        .trim()
+        .toLowerCase();
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "กรุณาระบุอีเมลให้ถูกต้อง"
+        });
+      }
+
+      const code = crypto.randomBytes(5)
+        .toString("hex")
+        .toUpperCase();
+
+      const codeHash = await bcrypt.hash(code, 10);
+
+      db.accessCodes.push({
+        id: crypto.randomUUID(),
+        email,
+        codeHash,
+        used: false,
+        createdBy: req.user.email,
+        createdAt: new Date().toISOString()
+      });
+
+      saveDatabase();
+      audit("ACCESS_CODE_CREATED", req.user, { email });
+
+      // แสดงรหัสให้เห็นเพียงครั้งเดียว
+      res.json({
+        success: true,
+        email,
+        accessCode: code,
+        message: "ส่งรหัสนี้ให้เจ้าของบัญชี Google ที่ระบุ"
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "สร้าง Access Code ไม่สำเร็จ"
+      });
+    }
+  }
+);
+
+// ผู้สมัครนำรหัสมาแลกสิทธิ์
+app.post("/api/access/redeem", requireLogin, async (req, res) => {
+  try {
+    const code = String(req.body.code || "")
+      .trim()
+      .toUpperCase();
+
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        message: "กรุณากรอก Access Code"
+      });
+    }
+
+    const availableCodes = db.accessCodes.filter(item =>
+      item.email === req.user.email &&
+      !item.used
+    );
+
+    let matchedCode = null;
+
+    for (const item of availableCodes) {
+      if (await bcrypt.compare(code, item.codeHash)) {
+        matchedCode = item;
+        break;
+      }
+    }
+
+    if (!matchedCode) {
+      return res.status(400).json({
+        success: false,
+        message: "รหัสไม่ถูกต้อง หรือไม่ตรงกับบัญชี Google นี้"
+      });
+    }
+
+    matchedCode.used = true;
+    matchedCode.usedAt = new Date().toISOString();
+
+    const user = db.users.find(
+      item => item.email === req.user.email
+    );
+
+    user.applicationAccess = true;
+
+    saveDatabase();
+    audit("ACCESS_CODE_REDEEMED", user);
+
+    res.json({
+      success: true,
+      message: "ยืนยันสิทธิ์สำเร็จ สามารถเข้าสู่ระบบสมัครทีมงานได้"
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "ตรวจสอบรหัสไม่สำเร็จ"
+    });
+  }
+});
+
+// ------------------------------
+// PUBLIC STATUS
+// ------------------------------
+
+app.get("/api/status", (req, res) => {
+  res.json({
+    server: "FROST CITY RP",
+    status: "online",
+    system: "Secure Staff Center",
+    googleLogin: Boolean(googleConfigured)
+  });
+});
+
+// ------------------------------
+// EXAM PANELS
+// ------------------------------
+
+// ผู้สมัครเห็นโจทย์และตัวเลือก แต่ไม่เห็นเฉลย
+app.get("/api/panels", (req, res) => {
+  const safePanels = db.panels.map(panel => ({
+    ...panel,
+    questions: (panel.questions || []).map(question => {
+      const { correct, answer, ...safeQuestion } = question;
+      return safeQuestion;
+    })
+  }));
+
+  res.json(safePanels);
+});
+
+// เฉพาะนายกและแอดมินสร้างข้อสอบได้
+app.post(
+  "/api/panels",
+  requireRole("mayor", "admin"),
+  (req, res) => {
+    const { name, description, questions, passMark } = req.body;
+
+    if (
+      typeof name !== "string" ||
+      !name.trim() ||
+      !Array.isArray(questions) ||
+      questions.length === 0 ||
+      questions.length > 100
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "ข้อมูลข้อสอบไม่ถูกต้อง"
+      });
+    }
+
+    for (const question of questions) {
+      if (
+        typeof question.text !== "string" ||
+        !Array.isArray(question.options) ||
+        question.options.length !== 4 ||
+        !Number.isInteger(question.correct) ||
+        question.correct < 0 ||
+        question.correct > 3
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "รูปแบบคำถามหรือเฉลยไม่ถูกต้อง"
+        });
+      }
+    }
+
+    const panel = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      description: String(description || ""),
+      questions: questions.map(question => ({
+        text: question.text,
+        options: question.options.map(String),
+        correct: question.correct,
+        points: Math.max(1, Math.min(100, Number(question.points) || 5))
+      })),
+      passMark: Math.max(0, Math.min(100, Number(passMark) || 70)),
+      createdAt: new Date().toISOString(),
+      createdBy: req.user.email
+    };
+
+    db.panels.push(panel);
+    saveDatabase();
+    audit("PANEL_CREATED", req.user, { panelId: panel.id });
+
+    res.json({
+      success: true,
+      panel: {
+        id: panel.id,
+        name: panel.name
+      }
+    });
+  }
+);
+
+// ------------------------------
+// APPLICATIONS
+// ------------------------------
+
+// สมัครได้เฉพาะบัญชีที่ได้รับ Access Code แล้ว
+app.post(
+  "/api/applications",
+  requireApplicationAccess,
+  (req, res) => {
+    const { panelId, nickname, icName, answers } = req.body;
+
+    const panel = db.panels.find(
+      item => item.id === panelId
+    );
+
+    if (!panel) {
+      return res.status(404).json({
+        success: false,
+        message: "ไม่พบชุดข้อสอบนี้"
+      });
+    }
+
+    if (
+      typeof nickname !== "string" ||
+      !nickname.trim() ||
+      typeof icName !== "string" ||
+      !icName.trim() ||
+      !Array.isArray(answers) ||
+      answers.length !== panel.questions.length
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "กรุณากรอกข้อมูลและตอบข้อสอบให้ครบ"
+      });
+    }
+
+    let score = 0;
+    let total = 0;
+
+    for (let i = 0; i < panel.questions.length; i++) {
+      const question = panel.questions[i];
+      const selected = answers[i];
+      const points = Number(question.points) || 5;
+
+      total += points;
+
+      if (
+        !Number.isInteger(selected) ||
+        selected < 0 ||
+        selected >= question.options.length
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `คำตอบข้อ ${i + 1} ไม่ถูกต้อง`
+        });
+      }
+
+      if (selected === question.correct) {
+        score += points;
+      }
+    }
+
+    const percent = total > 0
+      ? Math.round((score / total) * 100)
+      : 0;
+
+    const passed = percent >= panel.passMark;
+
+    const application = {
+      id: crypto.randomUUID(),
+      email: req.user.email,
+      panelId: panel.id,
+      nickname: nickname.trim(),
+      icName: icName.trim(),
+      answers,
+      score,
+      total,
+      percent,
+      passed,
+      status: passed ? "passed" : "failed",
+      createdAt: new Date().toISOString()
+    };
+
+    db.applications.push(application);
+    saveDatabase();
+    audit("APPLICATION_SUBMITTED", req.user, {
+      applicationId: application.id,
+      passed
     });
 
-    message.textContent="บันทึกแบบฟอร์มสำเร็จ";
-    document.getElementById("panelName").value="";
-    document.getElementById("panelDescription").value="";
-    document.getElementById("questionEditor").innerHTML="";
-    await loadData();
-  }catch(e){
-    message.textContent="บันทึกไม่สำเร็จ: "+e.message;
+    res.json({
+      success: true,
+      result: {
+        score,
+        total,
+        percent,
+        passed,
+        message: passed
+          ? "ผ่านการทดสอบ"
+          : "ไม่ผ่านการทดสอบ"
+      }
+    });
   }
-}
+);
 
-function renderPanelList(){
-  const box=document.getElementById("panelList");
-  if(!box)return;
-  if(!panels.length){
-    box.innerHTML='<div class="empty">ยังไม่มีแบบฟอร์ม</div>';
-    return;
+// ข้อมูลใบสมัครเป็นข้อมูลภายในเท่านั้น
+app.get(
+  "/api/applications",
+  requireRole("mayor", "admin"),
+  (req, res) => {
+    const applications = db.applications.map(item => ({
+      ...item
+    }));
+
+    res.json(applications);
   }
-  box.innerHTML=panels.map(p=>`
-    <div class="list-item">
-      <span>
-        <strong>${escapeHTML(p.name)}</strong><br>
-        <small>${p.questions.length} คำถาม • ผ่าน ${p.passMark}%</small>
-      </span>
-      <span class="badge">Active</span>
-    </div>`).join("");
-}
+);
 
-function renderResults(){
-  const box=document.getElementById("resultsList");
-  if(!box)return;
-  if(!applications.length){
-    box.innerHTML='<div class="empty">ยังไม่มีผู้สมัคร</div>';
-    return;
+// ------------------------------
+// STAFF MANAGEMENT
+// ------------------------------
+
+// นายกเท่านั้นที่แต่งตั้งตำแหน่งและสร้าง Staff ID
+app.post(
+  "/api/staff",
+  requireRole("mayor"),
+  (req, res) => {
+    const email = String(req.body.email || "")
+      .trim()
+      .toLowerCase();
+
+    const role = String(req.body.role || "");
+
+    if (!["admin", "staff"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "ตำแหน่งต้องเป็น admin หรือ staff"
+      });
+    }
+
+    const user = db.users.find(
+      item => item.email === email
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "ไม่พบบัญชีนี้ กรุณาให้เจ้าของบัญชีเข้าสู่ระบบ Google ก่อน"
+      });
+    }
+
+    if (user.role === "mayor") {
+      return res.status(400).json({
+        success: false,
+        message: "ไม่สามารถเปลี่ยนตำแหน่งนายกเมืองได้"
+      });
+    }
+
+    const prefix = role === "admin" ? "ADFC" : "STFC";
+    const existingIds = db.users
+      .map(item => item.staffId)
+      .filter(Boolean);
+
+    let number = 1;
+    let staffId;
+
+    do {
+      staffId = `${prefix}-${String(number).padStart(4, "0")}`;
+      number++;
+    } while (existingIds.includes(staffId));
+
+    user.role = role;
+    user.staffId = staffId;
+    user.applicationAccess = true;
+    user.appointedAt = new Date().toISOString();
+
+    saveDatabase();
+    audit("STAFF_APPOINTED", req.user, {
+      email,
+      role,
+      staffId
+    });
+
+    res.json({
+      success: true,
+      staff: {
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        staffId: user.staffId
+      }
+    });
   }
-  box.innerHTML=applications.slice().reverse().map(a=>`
-    <div class="list-item">
-      <span>
-        <strong>${escapeHTML(a.nickname)}</strong><br>
-        <small>IC: ${escapeHTML(a.icName)} • ${new Date(a.createdAt).toLocaleString("th-TH")}</small>
-      </span>
-      <span class="badge">${escapeHTML(a.result)} • ${a.percent}%</span>
-    </div>`).join("");
-}
+);
 
-async function generateImage(){
-  const message=document.getElementById("imageMessage");
-  const prompt=document.getElementById("imagePrompt").value.trim();
-  if(!prompt){
-    message.textContent="กรุณาใส่คำอธิบายภาพก่อน";
-    return;
+// ------------------------------
+// PUBLIC STAFF VERIFICATION
+// ------------------------------
+
+// เปิดให้ทุกคนตรวจสอบได้ แต่แสดงเฉพาะข้อมูลสาธารณะ
+app.get("/api/verify/:staffId", (req, res) => {
+  const staff = db.users.find(
+    item =>
+      item.staffId &&
+      item.staffId.toLowerCase() ===
+        req.params.staffId.toLowerCase() &&
+      ["admin", "staff"].includes(item.role)
+  );
+
+  if (!staff) {
+    return res.status(404).json({
+      verified: false,
+      message: "ไม่พบข้อมูลทีมงาน"
+    });
   }
-  message.textContent="ระบบสร้างภาพ AI ยังอยู่ระหว่างติดตั้ง";
-}
 
-function escapeHTML(value){
-  return String(value??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
+  res.json({
+    verified: true,
+    staff: {
+      name: staff.name,
+      staffId: staff.staffId,
+      role: staff.role
+    }
+  });
+});
 
-addQuestion();
-loadData();
-loadPanels();
-</script>
-</body>
-</html>
+// ------------------------------
+// DASHBOARD / AUDIT
+// ------------------------------
+
+app.get(
+  "/api/audit-logs",
+  requireRole("mayor"),
+  (req, res) => {
+    res.json(db.auditLogs.slice(-200));
+  }
+);
+
+app.get(
+  "/api/dashboard",
+  requireRole("mayor", "admin"),
+  (req, res) => {
+    const applications = db.applications;
+
+    res.json({
+      panels: db.panels.length,
+      applications: applications.length,
+      passed: applications.filter(item => item.passed).length,
+      failed: applications.filter(item => !item.passed).length
+    });
+  }
+);
+
+// ------------------------------
+// FRONTEND
+// ------------------------------
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "public", "index.html")
+  );
+});
+
+// ------------------------------
+// ERROR HANDLER
+// ------------------------------
+
+app.use((error, req, res, next) => {
+  console.error("Server error:", error);
+
+  res.status(500).json({
+    success: false,
+    message: "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์"
+  });
+});
+
+// ------------------------------
+// START SERVER
+// ------------------------------
+
+app.listen(PORT, () => {
+  console.log(`FROST CITY RP running on port ${PORT}`);
+  console.log(`Google Login: ${googleConfigured ? "Configured" : "Not configured"}`);
+});
